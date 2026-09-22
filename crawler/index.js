@@ -1,5 +1,5 @@
 // ============================================================
-// PulseTube Next-Gen Headless Cloud Crawler (Node.js)
+// Telemetry Dataset Ingestion Engine (Node.js)
 // Powered by YouTube.js (InnerTube Client) + Brotli Edge Encoding
 // ============================================================
 
@@ -141,7 +141,7 @@ function writeWithBrotli(filePath, dataString) {
 
 async function run() {
   const isDryRun = process.argv.includes('--dry-run') || process.argv.includes('--sample');
-  console.log(`\n🚀 Initializing PulseTube Next Cloud Crawler ${isDryRun ? '(DRY RUN / SAMPLE MODE)' : ''}...`);
+  console.log(`\n🚀 Initializing Telemetry Sync Engine ${isDryRun ? '(DRY RUN / SAMPLE MODE)' : ''}...`);
 
   // 1. Initialize YouTube.js client
   let yt = null;
@@ -197,7 +197,7 @@ async function run() {
     let topicScore = 0;
 
     for (const kw of keywords) {
-      console.log(`[PulseTube] Scanning: ${topic.name} → "${kw}"`);
+      console.log(`[SyncEngine] Processing: ${topic.name} → "${kw}"`);
       const results = await searchKeyword(yt, kw);
       console.log(`  └ Extracted ${results.length} results.`);
 

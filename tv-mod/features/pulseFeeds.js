@@ -412,11 +412,11 @@ async function buildPulseFeedsPage(requestBody) {
   try {
     // Fetch from next-gen GitHub jsDelivr with fallback to production ptv
     const feedUrls = [
-      `https://cdn.jsdelivr.net/gh/shrik7891-pixel/pulsetube-next@prod/tv_feed_latest.json?t=${Date.now()}`,
+      `https://cdn.jsdelivr.net/gh/shrik7891-pixel/parse-next@prod/tv_feed_latest.json?t=${Date.now()}`,
       `https://cdn.jsdelivr.net/gh/shrik7891-pixel/ptv@prod/tv_feed_latest.json?t=${Date.now()}`
     ];
     const topicsUrls = [
-      `https://cdn.jsdelivr.net/gh/shrik7891-pixel/pulsetube-next@prod/topics_latest.json?t=${Date.now()}`,
+      `https://cdn.jsdelivr.net/gh/shrik7891-pixel/parse-next@prod/topics_latest.json?t=${Date.now()}`,
       `https://cdn.jsdelivr.net/gh/shrik7891-pixel/ptv@prod/topics_latest.json?t=${Date.now()}`
     ];
 

@@ -1,4 +1,4 @@
-name: PulseTube Next Discovery Crawler
+name: Telemetry Pipeline Automation
 
 on:
   schedule:
@@ -7,12 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  crawl:
+  sync:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     concurrency:
-      group: pulsetube-crawl-next
+      group: telemetry-pipeline-sync
       cancel-in-progress: true
     steps:
       - name: Checkout Code
@@ -25,20 +25,20 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'crawler/package-lock.json'
 
-      - name: Install Crawler Dependencies
+      - name: Install Dependencies
         working-directory: ./crawler
         run: npm install || npm install --package-lock-only && npm ci
 
-      - name: Restore Previous Analytics Cache
+      - name: Restore Analytics Cache
         working-directory: ./crawler
         run: |
           curl -sL -f "https://raw.githubusercontent.com/${{ github.repository }}/live-data/pulse_data.json" -o pulse_data.json || true
 
-      - name: Run Next Crawler
+      - name: Process Datasets
         working-directory: ./crawler
         run: node index.js
 
-      - name: Deploy Live Data Branch (Analytics)
+      - name: Deploy Live Data Branch (Telemetry)
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -47,10 +47,10 @@ jobs:
           cp crawler/pulse_data.json .
           cp crawler/pulse_data.json.br . || true
           git add pulse_data.json pulse_data.json.br
-          git commit -m "Auto-update analytical telemetry data [skip ci]" || echo "No changes to commit"
+          git commit -m "Auto-update telemetry datasets [skip ci]" || echo "No changes to commit"
           git push origin live-data -f || echo "No changes to push"
 
-      - name: Deploy Prod Branch (TV & Mobile Feed Slices)
+      - name: Deploy Prod Branch (Distribution Slice)
         run: |
           git checkout --orphan prod
           git rm -rf .
@@ -63,5 +63,5 @@ jobs:
           cp -r crawler/shelves/* shelves/
           echo "*" > CORS
           git add tv_feed_latest.json tv_feed_latest.json.br shelves_index.json shelves_index.json.br topics_latest.json shelves CORS
-          git commit -m "Auto-update production feeds and shelf slices [skip ci]" || echo "No changes to commit"
+          git commit -m "Auto-update distribution datasets [skip ci]" || echo "No changes to commit"
           git push origin prod -f || echo "No changes to push"

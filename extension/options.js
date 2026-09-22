@@ -366,7 +366,7 @@ async function setupTagFilters() {
 // Direct query to GitHub CDN
 async function queryLocalServer() {
   const result = await storage.get([`${STORAGE_PREFIX}github_repo`]);
-  const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/pulsetube-next';
+  const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/parse-next';
   
   try {
     const res = await fetch(`https://raw.githubusercontent.com/${repo}/live-data/pulse_data.json?t=${Date.now()}`);
@@ -411,7 +411,7 @@ async function loadTopics(skipServerSync = false) {
     if (!skipServerSync) {
       // 1. Fetch Master List from GitHub (new source of truth)
       const result = await storage.get([`${STORAGE_PREFIX}github_repo`, `${STORAGE_PREFIX}github_token`]);
-      const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/pulsetube-next';
+      const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/parse-next';
       const token = result[`${STORAGE_PREFIX}github_token`];
       
       const headers = { 'Accept': 'application/vnd.github.v3+json' };
@@ -2044,7 +2044,7 @@ function setupEventListeners() {
 
   // Save GitHub credentials (Manual Button)
   document.getElementById('btn-save-credentials').addEventListener('click', async () => {
-    const repo = document.getElementById('gh-repo') ? document.getElementById('gh-repo').value.trim() : 'shrik7891-pixel/pulsetube-next';
+    const repo = document.getElementById('gh-repo') ? document.getElementById('gh-repo').value.trim() : 'shrik7891-pixel/parse-next';
     const ghToken = document.getElementById('gh-token') ? document.getElementById('gh-token').value.trim() : '';
 
     await storage.set({
@@ -2075,9 +2075,9 @@ function setupEventListeners() {
   const btnPresetNext = document.getElementById('btn-preset-next');
   if (btnPresetNext) {
     btnPresetNext.addEventListener('click', async () => {
-      if (ghRepoInput) ghRepoInput.value = 'shrik7891-pixel/pulsetube-next';
-      await storage.set({ [`${STORAGE_PREFIX}github_repo`]: 'shrik7891-pixel/pulsetube-next' });
-      alert('Switched to PulseTube Next (Staging): shrik7891-pixel/pulsetube-next');
+      if (ghRepoInput) ghRepoInput.value = 'shrik7891-pixel/parse-next';
+      await storage.set({ [`${STORAGE_PREFIX}github_repo`]: 'shrik7891-pixel/parse-next' });
+      alert('Switched to PulseTube Next (Staging): shrik7891-pixel/parse-next');
       loadDashboard();
     });
   }
@@ -2096,7 +2096,7 @@ function setupEventListeners() {
 
   async function startCloudSyncLogPolling(ghToken) {
     const res = await storage.get(`${STORAGE_PREFIX}github_repo`);
-    const repo = res[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/pulsetube-next';
+    const repo = res[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/parse-next';
     const container = document.getElementById('cloud-sync-logs-container');
     const terminal = document.getElementById('cloud-sync-terminal');
     const statusEl = document.getElementById('cloud-sync-status');
@@ -2209,7 +2209,7 @@ function setupEventListeners() {
 
     const res = await storage.get([`${STORAGE_PREFIX}github_token`, `${STORAGE_PREFIX}github_repo`]);
     let ghToken = res[`${STORAGE_PREFIX}github_token`] || (document.getElementById('gh-token') ? document.getElementById('gh-token').value.trim() : '');
-    const repo = res[`${STORAGE_PREFIX}github_repo`] || (document.getElementById('gh-repo') ? document.getElementById('gh-repo').value.trim() : 'shrik7891-pixel/pulsetube-next');
+    const repo = res[`${STORAGE_PREFIX}github_repo`] || (document.getElementById('gh-repo') ? document.getElementById('gh-repo').value.trim() : 'shrik7891-pixel/parse-next');
     
     if (!ghToken) {
       alert("Please go to Local DB Config and enter your GitHub Personal Access Token first.");
@@ -2295,7 +2295,7 @@ function setupEventListeners() {
 
     const res = await storage.get([`${STORAGE_PREFIX}github_token`, `${STORAGE_PREFIX}github_repo`]);
     let ghToken = res[`${STORAGE_PREFIX}github_token`] || (document.getElementById('gh-token') ? document.getElementById('gh-token').value.trim() : '');
-    const repo = res[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/pulsetube-next';
+    const repo = res[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/parse-next';
     
     if (!ghToken) {
       alert("No GitHub token found.");
@@ -2365,7 +2365,7 @@ function setupEventListeners() {
   async function checkActiveCloudSync() {
     const res = await storage.get([`${STORAGE_PREFIX}github_token`, `${STORAGE_PREFIX}github_repo`]);
     let ghToken = res[`${STORAGE_PREFIX}github_token`] || (document.getElementById('gh-token') ? document.getElementById('gh-token').value.trim() : '');
-    const repo = res[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/pulsetube-next';
+    const repo = res[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/parse-next';
     if (!ghToken || ghToken.startsWith('gho_')) return;
     
     try {
@@ -2816,7 +2816,7 @@ async function syncTopicsToGitHub(topics, immediate = false) {
     
     try {
       const result = await storage.get([`${STORAGE_PREFIX}github_repo`, `${STORAGE_PREFIX}github_token`, `${STORAGE_PREFIX}tv_sync_enabled`]);
-      const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/pulsetube-next';
+      const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/parse-next';
       const token = result[`${STORAGE_PREFIX}github_token`];
       const isSyncEnabled = result[`${STORAGE_PREFIX}tv_sync_enabled`] !== false;
 

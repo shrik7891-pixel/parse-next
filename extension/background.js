@@ -260,7 +260,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 async function triggerGitHubAction() {
   const result = await chrome.storage.local.get([`${STORAGE_PREFIX}github_token`, `${STORAGE_PREFIX}github_repo`, `${STORAGE_PREFIX}tv_sync_enabled`]);
   let token = result[`${STORAGE_PREFIX}github_token`];
-  const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/pulsetube-next';
+  const repo = result[`${STORAGE_PREFIX}github_repo`] || 'shrik7891-pixel/parse-next';
   const isSyncEnabled = result[`${STORAGE_PREFIX}tv_sync_enabled`] !== false;
   
   if (!isSyncEnabled) {
