@@ -224,6 +224,19 @@ async function run() {
           pulse_score = Math.round(pulse_score * 1.5);
         }
 
+        let momentum = 'Steady';
+        let momentumScore = 0; // 0 = steady, 1 = rising, 2 = surging, -1 = fading
+        if (current_vph > 1.4 * vph && current_vph > 30) {
+          momentum = 'Surging';
+          momentumScore = 2;
+        } else if (current_vph > 1.1 * vph) {
+          momentum = 'Rising';
+          momentumScore = 1;
+        } else if (current_vph < 0.6 * vph && ageHours > 12) {
+          momentum = 'Fading';
+          momentumScore = -1;
+        }
+
         topicMaxVPH = Math.max(topicMaxVPH, vph);
         topicScore += pulse_score;
 
@@ -247,6 +260,8 @@ async function run() {
           vph,
           current_vph,
           performance: pulse_score,
+          momentum,
+          momentum_score: momentumScore,
           created_at,
           last_seen: new Date().toISOString()
         });
@@ -349,7 +364,7 @@ async function run() {
       v.duration,
       Number((v.vph || 0).toFixed(1)),
       Number((v.performance || 0).toFixed(2)),
-      0, // growth
+      v.momentum_score || 0, // momentum score (2=Surging, 1=Rising, 0=Steady, -1=Fading)
       Number((v.current_vph || 0).toFixed(1))
     ]);
 
