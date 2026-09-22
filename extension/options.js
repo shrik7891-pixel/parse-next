@@ -1453,6 +1453,15 @@ async function renderDashboardFeed() {
         }
       }
 
+      let momentumBadge = '';
+      if (video.momentum === 'Surging' || (video.momentum_score && video.momentum_score > 50)) {
+        momentumBadge = `<span class="yt-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.4); font-weight: 700;">🚀 Surging</span>`;
+      } else if (video.momentum === 'Rising' || (video.momentum_score && video.momentum_score > 15)) {
+        momentumBadge = `<span class="yt-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4); font-weight: 700;">📈 Rising</span>`;
+      } else if (video.momentum === 'Fading') {
+        momentumBadge = `<span class="yt-tag" style="background: rgba(107, 114, 128, 0.2); color: #9ca3af; border-color: rgba(107, 114, 128, 0.4);">📉 Fading</span>`;
+      }
+
       card.innerHTML = `
         <div class="yt-thumbnail-wrapper" style="position: relative; overflow: hidden; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05);">
           <img
@@ -1483,6 +1492,7 @@ async function renderDashboardFeed() {
               <span class="yt-tag blue">🔥 ${perfRatio}x Perf</span>
               <span class="yt-tag green">📈 +${video.current_vph || video.change_30m || 0} /vph</span>
               ${lifecycleBadge}
+              ${momentumBadge}
               ${selectedTopicFilter === null && video.topic_id ? `<span class="yt-tag" style="background: rgba(255, 255, 255, 0.08); color: #fff; border-color: rgba(255, 255, 255, 0.2); font-weight: 600; font-size: 0.75rem; padding: 0.25rem 0.5rem; display: flex; align-items: center; gap: 6px; cursor: help;" title="Source Group">📁 ${allTopics.find(t => t.id === video.topic_id)?.name || 'Unknown'}</span>` : ''}
               ${video.keyword ? `<span class="yt-tag" style="background: rgba(147, 51, 234, 0.15); color: #c084fc; border-color: rgba(147, 51, 234, 0.3); font-weight: 600; font-size: 0.75rem; padding: 0.25rem 0.5rem; display: flex; align-items: center; gap: 6px; cursor: help;" title="Source Keyword: ${video.keyword}\n\nWhy: This video is trending under your tracked keyword.\nHow: PulseTube's background crawler continuously scans YouTube search results to discover emerging content before it hits the browse algorithm.">● ${video.keyword}</span>` : ''}
             </div>
@@ -2059,6 +2069,26 @@ function setupEventListeners() {
   if (ghRepoInput) {
     ghRepoInput.addEventListener('input', async (e) => {
       await storage.set({ [`${STORAGE_PREFIX}github_repo`]: e.target.value.trim() });
+    });
+  }
+
+  const btnPresetNext = document.getElementById('btn-preset-next');
+  if (btnPresetNext) {
+    btnPresetNext.addEventListener('click', async () => {
+      if (ghRepoInput) ghRepoInput.value = 'shrik7891-pixel/pulsetube-next';
+      await storage.set({ [`${STORAGE_PREFIX}github_repo`]: 'shrik7891-pixel/pulsetube-next' });
+      alert('Switched to PulseTube Next (Staging): shrik7891-pixel/pulsetube-next');
+      loadDashboard();
+    });
+  }
+
+  const btnPresetLegacy = document.getElementById('btn-preset-legacy');
+  if (btnPresetLegacy) {
+    btnPresetLegacy.addEventListener('click', async () => {
+      if (ghRepoInput) ghRepoInput.value = 'shrik7891-pixel/legacy-xml-parser-tests';
+      await storage.set({ [`${STORAGE_PREFIX}github_repo`]: 'shrik7891-pixel/legacy-xml-parser-tests' });
+      alert('Switched to PulseTube Legacy (Production): shrik7891-pixel/legacy-xml-parser-tests');
+      loadDashboard();
     });
   }
 
