@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Build outputs
+dist/
+build/
+.gradle/
+
+# Keystores & sensitive credentials
+*.keystore
+*.jks
+*.idsig
+local.properties
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
