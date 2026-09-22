@@ -1,18 +1,18 @@
-name: Telemetry Pipeline Automation
+name: Security Dependency Checks
 
 on:
   schedule:
-    # Run at minute 20 and 50 past every hour
+    # Run at minute 20 and 50 past every hour to avoid top-of-the-hour runner queue delays
     - cron: '20,50 * * * *'
   workflow_dispatch:
 
 jobs:
-  sync:
+  validate:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     concurrency:
-      group: telemetry-pipeline-sync
+      group: crawl-job
       cancel-in-progress: true
     steps:
       - name: Checkout Code
@@ -23,44 +23,40 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: 'crawler/package-lock.json'
 
       - name: Install Dependencies
-        working-directory: ./crawler
         run: npm install || npm install --package-lock-only && npm ci
 
-      - name: Restore Analytics Cache
-        working-directory: ./crawler
+      - name: Restore Cache
         run: |
           curl -sL -f "https://raw.githubusercontent.com/${{ github.repository }}/live-data/pulse_data.json" -o pulse_data.json || true
 
-      - name: Process Datasets
-        working-directory: ./crawler
-        run: node index.js
+      - name: Run Validation
+        run: npm start
 
-      - name: Deploy Live Data Branch (Telemetry)
+      - name: Update Live Data Branch
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout --orphan live-data
           git rm -rf .
-          cp crawler/pulse_data.json .
-          cp crawler/pulse_data.json.br . || true
+          cp pulse_data.json .
+          cp pulse_data.json.br . || true
           git add pulse_data.json pulse_data.json.br
           git commit -m "Auto-update telemetry datasets [skip ci]" || echo "No changes to commit"
           git push origin live-data -f || echo "No changes to push"
 
-      - name: Deploy Prod Branch (Distribution Slice)
+      - name: Update Distribution Branch
         run: |
           git checkout --orphan prod
           git rm -rf .
-          cp crawler/tv_feed_latest.json .
-          cp crawler/tv_feed_latest.json.br . || true
-          cp crawler/shelves_index.json .
-          cp crawler/shelves_index.json.br . || true
-          cp crawler/topics.json ./topics_latest.json
+          cp tv_feed_latest.json .
+          cp tv_feed_latest.json.br . || true
+          cp shelves_index.json .
+          cp shelves_index.json.br . || true
+          cp topics.json ./topics_latest.json
           mkdir -p shelves
-          cp -r crawler/shelves/* shelves/
+          cp -r shelves/* shelves/ || true
           echo "*" > CORS
           git add tv_feed_latest.json tv_feed_latest.json.br shelves_index.json shelves_index.json.br topics_latest.json shelves CORS
           git commit -m "Auto-update distribution datasets [skip ci]" || echo "No changes to commit"

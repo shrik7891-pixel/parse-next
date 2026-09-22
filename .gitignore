@@ -2,18 +2,14 @@
 node_modules/
 .npm/
 
-# Build outputs
-dist/
-build/
-.gradle/
-
-# Keystores & sensitive credentials
-*.keystore
-*.jks
-*.idsig
-local.properties
-.env
-.env.*
+# Generated Data Slices (Stored in orphan branches only)
+pulse_data.json
+pulse_data.json.br
+tv_feed_latest.json
+tv_feed_latest.json.br
+shelves/
+shelves_index.json
+shelves_index.json.br
 
 # OS files
 .DS_Store

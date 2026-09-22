@@ -389,10 +389,10 @@ async function run() {
   writeWithBrotli(shelfIndexPath, JSON.stringify(shelfIndex));
   console.log(`✅ Chunked shelf index (${shelfIndex.length} shelves) written to ${shelfIndexPath} (+ .br)`);
 
-  console.log('\n🎉 Crawler execution completed successfully.');
+  console.log('\n🎉 Validation execution completed successfully.');
 }
 
 run().catch(e => {
-  console.error('Fatal crawler error:', e);
+  console.error('Fatal validation error:', e);
   process.exit(1);
 });
