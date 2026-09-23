@@ -34,15 +34,24 @@ jobs:
       - name: Run Validation
         run: npm start
 
+      - name: Stage Artifacts
+        run: |
+          mkdir -p /tmp/deploy_live /tmp/deploy_prod
+          cp pulse_data.json pulse_data.json.br /tmp/deploy_live/
+          cp tv_feed_latest.json tv_feed_latest.json.br shelves_index.json shelves_index.json.br /tmp/deploy_prod/
+          cp topics.json /tmp/deploy_prod/topics_latest.json
+          cp -r shelves /tmp/deploy_prod/
+          echo "*" > /tmp/deploy_prod/CORS
+
       - name: Update Live Data Branch
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout --orphan live-data
           git rm -rf .
-          cp pulse_data.json .
-          cp pulse_data.json.br . || true
-          git add pulse_data.json pulse_data.json.br
+          git clean -fdx
+          cp -r /tmp/deploy_live/* .
+          git add -A
           git commit -m "Auto-update telemetry datasets [skip ci]" || echo "No changes to commit"
           git push origin live-data -f || echo "No changes to push"
 
@@ -50,14 +59,8 @@ jobs:
         run: |
           git checkout --orphan prod
           git rm -rf .
-          cp tv_feed_latest.json .
-          cp tv_feed_latest.json.br . || true
-          cp shelves_index.json .
-          cp shelves_index.json.br . || true
-          cp topics.json ./topics_latest.json
-          mkdir -p shelves
-          cp -r shelves/* shelves/ || true
-          echo "*" > CORS
-          git add tv_feed_latest.json tv_feed_latest.json.br shelves_index.json shelves_index.json.br topics_latest.json shelves CORS
+          git clean -fdx
+          cp -r /tmp/deploy_prod/* .
+          git add -A
           git commit -m "Auto-update distribution datasets [skip ci]" || echo "No changes to commit"
           git push origin prod -f || echo "No changes to push"
